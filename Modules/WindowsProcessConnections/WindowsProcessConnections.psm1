@@ -192,23 +192,24 @@ function Load-WindowsProcessConnectionDataSet([string] $computer, [System.Data.D
     $orphanUdpEndpointTable = $windowsProcessConnectionDataSet.Tables['OrphanUdpEndpoint']
 
     $networkAdapterTable.BeginLoadData()
+    Get-WmiObject -ComputerName $computer -Class 'Win32_NetworkAdapterConfiguration' -Filter 'IPEnabled = true' | %{ [void] $networkAdapterTable.LoadDataRow(@($_.InterfaceIndex, $_.ServiceName, $_.Description, $_.MACAddress, $_.DHCPEnabled, (Get-ManagementDate $_.DHCPLeaseObtained), (Get-ManagementDate $_.DHCPLeaseExpires), $_.DHCPServer, $_.IPAddress, $_.IPSubnet, $_.DefaultIPGateway, $_.FullDNSRegistrationEnabled, $_.DnsHostName, $_.DNSDomain, $_.DNSServerSearchOrder), $true) }
+    $networkAdapterTable.EndLoadData()
+
     $processTable.BeginLoadData()
+    Get-WmiObject -ComputerName $computer -Class 'Win32_Process' | %{ [void] $processTable.LoadDataRow(@($_.ProcessId, $_.ParentProcessId, $_.Name, $_.ExecutablePath, $_.CommandLine, (Format-Owner $_), (Get-ManagementDate $_.CreationDate)), $true) }
+    $processTable.EndLoadData()
+
     $tcpConnectionTable.BeginLoadData()
     $udpEndpointTable.BeginLoadData()
-    $serviceTable.BeginLoadData()
 
-    Get-WmiObject -ComputerName $computer -Class 'Win32_NetworkAdapterConfiguration' -Filter 'IPEnabled = true' | %{ [void] $networkAdapterTable.LoadDataRow(@($_.InterfaceIndex, $_.ServiceName, $_.Description, $_.MACAddress, $_.DHCPEnabled, (Get-ManagementDate $_.DHCPLeaseObtained), (Get-ManagementDate $_.DHCPLeaseExpires), $_.DHCPServer, $_.IPAddress, $_.IPSubnet, $_.DefaultIPGateway, $_.FullDNSRegistrationEnabled, $_.DnsHostName, $_.DNSDomain, $_.DNSServerSearchOrder), $true) }
-    Get-WmiObject -ComputerName $computer -Class 'Win32_Process' | %{ [void] $processTable.LoadDataRow(@($_.ProcessId, $_.ParentProcessId, $_.Name, $_.ExecutablePath, $_.CommandLine, (Format-Owner $_), (Get-ManagementDate $_.CreationDate)), $true) }
     Get-WmiObject -ComputerName $computer -Namespace 'ROOT/StandardCimv2' -Class 'MSFT_NetTCPConnection' | Select *, $localAddressNameProperty, $remoteAddressNameProperty, $tcpStateNameProperty | %{ [void] $tcpConnectionTable.LoadDataRow(@($_.InstanceId, $_.OwningProcess, $_.LocalAddressName, $_.LocalAddress, $_.LocalPort, $_.RemoteAddressName, $_.RemoteAddress, $_.RemotePort, $_.StateName, (Get-ManagementDate $_.CreationTime)), $true) }
     Get-WmiObject -ComputerName $computer -Namespace 'ROOT/StandardCimv2' -Class 'MSFT_NetUDPEndpoint' | Select *, $localAddressNameProperty | %{ [void] $udpEndpointTable.LoadDataRow(@($_.InstanceId, $_.OwningProcess, $_.LocalAddressName, $_.LocalAddress, $_.LocalPort, (Get-ManagementDate $_.CreationTime)), $true) }
-    Get-WmiObject -ComputerName $computer -Class 'Win32_Service' -Filter "State != 'Stopped'" | %{ [void] $serviceTable.LoadDataRow(@($_.Name, $_.DisplayName, $_.Description, $_.PathName, $_.Status, $_.ProcessId), $true) }
 
-    $networkAdapterTable.EndLoadData()
-    $processTable.EndLoadData()
     $tcpConnectionTable.EndLoadData()
 
     if ($tcpConnectionTable.HasErrors -eq $true)
     {
+        Write-Host 'Processing orphaned TCP connections...'
         $orphanTcpConnectionTable.BeginLoadData()
 
         [System.Data.DataRow] $tcpConnectionTableRow = $null
@@ -229,6 +230,8 @@ function Load-WindowsProcessConnectionDataSet([string] $computer, [System.Data.D
 
     if ($udpEndpointTable.HasErrors -eq $true)
     {
+        Write-Host 'Processing orphaned UDP endpoints...'
+
         $orphanUdpEndpointTable.BeginLoadData()
 
         [System.Data.DataRow] $udpEndpointTableRow = $null
@@ -245,6 +248,8 @@ function Load-WindowsProcessConnectionDataSet([string] $computer, [System.Data.D
         $udpEndpointTable.EndLoadData()
     }
 
+    $serviceTable.BeginLoadData()
+    Get-WmiObject -ComputerName $computer -Class 'Win32_Service' -Filter "State != 'Stopped'" | %{ [void] $serviceTable.LoadDataRow(@($_.Name, $_.DisplayName, $_.Description, $_.PathName, $_.Status, $_.ProcessId), $true) }
     $serviceTable.EndLoadData()
 
     $windowsProcessConnectionDataSet.AcceptChanges()
