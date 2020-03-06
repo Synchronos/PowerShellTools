@@ -40,12 +40,12 @@ function Get-ManagementDate($dmtfDate)
 
         $dateKind = [DateTimeKind]::Utc
 
-        if ($dmtfDate.EndsWith('+000') -eq $false)
+        if ($dmtfDate.EndsWith('+000') -eq $false -and $dmtfDate.EndsWith('+00:00') -eq $false)
         {
             $dateKind = [DateTimeKind]::Local
         }
 
-        [DateTimeOffset]::new([DateTime]::SpecifyKind($date, $dateKind))
+        [System.DateTimeOffset] (New-Object 'System.DateTimeOffset' ([DateTime]::SpecifyKind($date, $dateKind)))
     }
     else
     {
@@ -76,7 +76,7 @@ function Format-Owner($process)
 
 function Create-WindowsProcessConnectionDataSet()
 {
-    $windowsProcessConnectionDataSet = [System.Data.DataSet]::new('WindowsProcessConnection')
+    $windowsProcessConnectionDataSet = New-Object 'System.Data.DataSet' 'WindowsProcessConnection'
     $windowsProcessConnectionDataSet.SchemaSerializationMode = [System.Data.SchemaSerializationMode]::IncludeSchema
 
     $networkAdapterTable = $windowsProcessConnectionDataSet.Tables.Add('NetworkAdapter')
@@ -85,8 +85,8 @@ function Create-WindowsProcessConnectionDataSet()
     [void] $networkAdapterTable.Columns.Add('Description', [string])
     [void] $networkAdapterTable.Columns.Add('MACAddress', [string])
     [void] $networkAdapterTable.Columns.Add('DHCPEnabled', [bool])
-    [void] $networkAdapterTable.Columns.Add('DHCPLeaseObtained', [DateTimeOffset])
-    [void] $networkAdapterTable.Columns.Add('DHCPLeaseExpires', [DateTimeOffset])
+    [void] $networkAdapterTable.Columns.Add('DHCPLeaseObtained', [System.DateTimeOffset])
+    [void] $networkAdapterTable.Columns.Add('DHCPLeaseExpires', [System.DateTimeOffset])
     [void] $networkAdapterTable.Columns.Add('DHCPServer', [string])
     [void] $networkAdapterTable.Columns.Add('IPAddress', [string[]])
     [void] $networkAdapterTable.Columns.Add('IPSubnet', [string[]])
@@ -104,7 +104,7 @@ function Create-WindowsProcessConnectionDataSet()
     [void] $processTable.Columns.Add('ExecutablePath', [string])
     [void] $processTable.Columns.Add('CommandLine', [string])
     [void] $processTable.Columns.Add('Owner', [string])
-    [void] $processTable.Columns.Add('CreationDate', [DateTimeOffset])
+    [void] $processTable.Columns.Add('CreationDate', [System.DateTimeOffset])
     $processTable.PrimaryKey = $processKeyColumn
 
     $serviceTable = $windowsProcessConnectionDataSet.Tables.Add('Service')
@@ -131,7 +131,7 @@ function Create-WindowsProcessConnectionDataSet()
     [void] $tcpConnectionTable.Columns.Add('RemoteAddress', [string])
     [void] $tcpConnectionTable.Columns.Add('RemotePort', [int])
     [void] $tcpConnectionTable.Columns.Add('Status', [string])
-    [void] $tcpConnectionTable.Columns.Add('CreationTime', [DateTimeOffset])
+    [void] $tcpConnectionTable.Columns.Add('CreationTime', [System.DateTimeOffset])
     $tcpConnectionTable.PrimaryKey = $tcpConnectionKeyColumn
 
     $tcpConnectionRelation = $windowsProcessConnectionDataSet.Relations.Add($processKeyColumn, $processTcpConnectionForeignKeyColumn)
@@ -144,7 +144,7 @@ function Create-WindowsProcessConnectionDataSet()
     [void] $udpEndpointTable.Columns.Add('LocalAddressName', [string])
     [void] $udpEndpointTable.Columns.Add('LocalAddress', [string])
     [void] $udpEndpointTable.Columns.Add('LocalPort', [int])
-    [void] $udpEndpointTable.Columns.Add('CreationTime', [DateTimeOffset])
+    [void] $udpEndpointTable.Columns.Add('CreationTime', [System.DateTimeOffset])
     $udpEndPointTable.PrimaryKey = $udpEndPointKeyColumn
 
     $udpEndPointRelation = $windowsProcessConnectionDataSet.Relations.Add($processKeyColumn, $processUdpEndpointForeignKeyColumn)
@@ -160,7 +160,7 @@ function Create-WindowsProcessConnectionDataSet()
     [void] $orphanTcpConnectionTable.Columns.Add('RemoteAddress', [string])
     [void] $orphanTcpConnectionTable.Columns.Add('RemotePort', [int])
     [void] $orphanTcpConnectionTable.Columns.Add('Status', [string])
-    [void] $orphanTcpConnectionTable.Columns.Add('CreationTime', [DateTimeOffset])
+    [void] $orphanTcpConnectionTable.Columns.Add('CreationTime', [System.DateTimeOffset])
     $orphanTcpConnectionTable.PrimaryKey = $orphanTcpConnectionKeyColumn
 
     $orphanUdpEndpointTable = $windowsProcessConnectionDataSet.Tables.Add('OrphanUDPEndPoint')
@@ -169,7 +169,7 @@ function Create-WindowsProcessConnectionDataSet()
     [void] $orphanUdpEndpointTable.Columns.Add('LocalAddressName', [string])
     [void] $orphanUdpEndpointTable.Columns.Add('LocalAddress', [string])
     [void] $orphanUdpEndpointTable.Columns.Add('LocalPort', [int])
-    [void] $orphanUdpEndpointTable.Columns.Add('CreationTime', [DateTimeOffset])
+    [void] $orphanUdpEndpointTable.Columns.Add('CreationTime', [System.DateTimeOffset])
     $orphanUdpEndPointTable.PrimaryKey = $orphanUdpEndPointKeyColumn
 
     $windowsProcessConnectionDataSet.AcceptChanges()
@@ -351,7 +351,7 @@ function Format-WindowsProcessConnection
         {
             $xmlReader = [System.Xml.XmlReader]::Create($xmlFile)
 
-            $xmlWriterSettings = [System.Xml.XmlWriterSettings]::new()
+            $xmlWriterSettings = New-Object 'System.Xml.XmlWriterSettings'
             $xmlWriterSettings.Encoding = [System.Text.Encoding]::UTF8
             $xmlWriterSettings.Indent = $true
             $xmlWriterSettings.IndentChars = '  '
@@ -359,7 +359,7 @@ function Format-WindowsProcessConnection
             $htmlTempFile = [System.IO.Path]::ChangeExtension($xmlFile, '.html')
             $xmlWriter = [System.Xml.XmlWriter]::Create($htmlTempFile, $xmlWriterSettings)
 
-            $xslt = [System.Xml.Xsl.XslCompiledTransform]::new()
+            $xslt = New-Object 'System.Xml.Xsl.XslCompiledTransform'
             $xslt.Load((Join-Path (Split-Path -Parent $PSCommandPath) 'WindowsProcessConnections.xsl'))
             $xslt.Transform($xmlReader, $xmlWriter)
 
