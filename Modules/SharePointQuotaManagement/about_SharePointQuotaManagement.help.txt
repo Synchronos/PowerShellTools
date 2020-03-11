@@ -1,0 +1,23 @@
+TOPIC
+    about_SharePointQuotaManagement
+
+SHORT DESCRIPTION
+    The SharePointQuotaManagement module provides a set of commands that eases management of the quotas applied to SharePoint site collections.
+
+LONG DESCRIPTION
+    The SharePointQuotaManagement module provides a set of commands that eases management of the quotas applied to SharePoint site collections. This module is released under the MIT License.
+
+EXAMPLES
+    The sample code below demonstrates how to...
+
+KEYWORDS
+    SharePoint
+    Site Collection
+    Quota
+
+SEE ALSO
+    Get-SPQuotaTemplate
+    Get-SPSiteQuotaInfo
+    Test-SPSiteQuotaNeedsUpdate
+    Update-SPSiteQuota
+
