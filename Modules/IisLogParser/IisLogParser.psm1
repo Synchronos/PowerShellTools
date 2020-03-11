@@ -107,7 +107,7 @@ function Get-IisWebSiteLog
 
             $logFileStartDate = $StartDate.ToUniversalTime().Date
             $logFileEndDate = $EndDate.ToUniversalTime().Date
-            $logFiles = (Get-ChildItem -Recurse "$($iisLogDirectory)\u_ex*.log" | Select *, $logFileDateProperty | Sort LogFileDate).Where({ $_.LogFileDate -eq $logFileStartDate }, 'SkipUntil').Where({ $_.LogFileDate -gt $logFileEndDate }, 'Until')
+            $logFiles = (Get-ChildItem -Recurse "$($iisLogDirectory)\u_ex*.log" | Select *, $logFileDateProperty | Sort LogFileDate).Where({ $_.LogFileDate -ge $logFileStartDate }, 'SkipUntil').Where({ $_.LogFileDate -gt $logFileEndDate }, 'Until')
 
             foreach ($logFile in $logFiles)
             {
