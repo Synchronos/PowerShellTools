@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+    <ViewDefinitions>
+        <View>
+            <Name>Default</Name>
+            <ViewSelectedBy>
+                <TypeName>SharePointQuotaManagement.QuotaInfo</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem>
+                                <PropertyName>Url</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Root Web Title</Label>
+                                <PropertyName>RootWebTitle</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Quota Template</Label>
+                                <PropertyName>QuotaTemplate</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Storage Maximum Level</Label>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { "No Limit" } else { "{0:N0} MB" -f ($_.StorageMaximumLevel / 1MB) }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Storage Warning Level</Label>
+                                <ScriptBlock>if ($_.StorageWarningLevel -eq 0) { "No Limit" } else { "{0:N0} MB" -f ($_.StorageWarningLevel / 1MB) }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Storage Used</Label>
+                                <ScriptBlock>$_.StorageUsed / 1MB</ScriptBlock>
+                                <FormatString>{0:N3} MB</FormatString>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Quota Used</Label>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { 0 } else { $_.StorageUsed / $_.StorageMaximumLevel }</ScriptBlock>
+                                <FormatString>{0:P}</FormatString>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Quota Needs Update</Label>
+                                <ScriptBlock>if ($_.QuotaNeedsUpdate -eq $true) { "Yes" } else { "No" }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Content Database Name</Label>
+                                <PropertyName>ContentDatabaseName</PropertyName>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+        <View>
+            <Name>Default</Name>
+            <ViewSelectedBy>
+                <TypeName>SharePointQuotaManagement.QuotaInfo</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Label>Url</Label>
+                        <Width>42</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Root Web Title</Label>
+                        <Width>15</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Quota Template</Label>
+                        <Width>22</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Storage Maximum Level (MB)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Storage Warning Level (MB)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Storage Used (MB)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Quota Used</Label>
+                        <Width>8</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Quota Needs Update</Label>
+                        <Width>7</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Content Database Name</Label>
+                        <Width>19</Width>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Url</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>RootWebTitle</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>QuotaTemplate</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { "No Limit" } else { "{0:N0}" -f ($_.StorageMaximumLevel / 1MB) }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.StorageWarningLevel -eq 0) { "No Limit" } else { "{0:N0}" -f ($_.StorageWarningLevel / 1MB) }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>$_.StorageUsed / 1MB</ScriptBlock>
+                                <FormatString>{0:N3}</FormatString>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                                <TableColumnItem>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { 0 } else { $_.StorageUsed / $_.StorageMaximumLevel }</ScriptBlock>
+                                <FormatString>{0:P}</FormatString>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.QuotaNeedsUpdate -eq $true) { "Yes" } else { "No" }</ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>ContentDatabaseName</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>Default</Name>
+            <ViewSelectedBy>
+                <TypeName>Microsoft.SharePoint.Administration.SPQuotaTemplate</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem>
+                                <Label>Name</Label>
+                                <PropertyName>Name</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Quota ID</Label>
+                                <PropertyName>QuotaID</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Storage Maximum Level</Label>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { "No Limit" } else { "{0:N0} MB" -f ($_.StorageMaximumLevel / 1MB) }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Storage Warning Level</Label>
+                                <ScriptBlock>if ($_.StorageWarningLevel -eq 0) { "No Limit" } else { "{0:N0} MB" -f ($_.StorageWarningLevel / 1MB) }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>User Code Maximum Level</Label>
+                                <ScriptBlock>if ($_.UserCodeMaximumLevel -eq 0) { "No Limit" } else { "$($_.UserCodeMaximumLevel) points" }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>User Code WarningLevel</Label>
+                                <ScriptBlock>if ($_.UserCodeWarningLevel -eq 0) { "No Limit" } else { "$($_.UserCodeWarningLevel) points" }</ScriptBlock>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+        <View>
+            <Name>Default</Name>
+            <ViewSelectedBy>
+                <TypeName>Microsoft.SharePoint.Administration.SPQuotaTemplate</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                     <TableColumnHeader>
+                        <Label>Name</Label>
+                        <Width>22</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Quota ID</Label>
+                        <Width>12</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Storage Maximum Level (MB)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Storage Warning Level (MB)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>User Code Maximum Level (points)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>User Code Warning Level (points)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Name</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>QuotaID</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { "No Limit" } else { "{0:N0}" -f ($_.StorageMaximumLevel / 1MB) }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.StorageWarningLevel -eq 0) { "No Limit" } else { "{0:N0}" -f ($_.StorageWarningLevel / 1MB) }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.UserCodeMaximumLevel -eq 0) { "No Limit" } else { $_.UserCodeMaximumLevel }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.UserCodeWarningLevel -eq 0) { "No Limit" } else { $_.UserCodeWarningLevel }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>Default</Name>
+            <ViewSelectedBy>
+                <TypeName>Microsoft.SharePoint.Administration.SPQuota</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem>
+                                <Label>QuotaID</Label>
+                                <PropertyName>QuotaID</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Storage Maximum Level</Label>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { "No Limit" } else { "{0:N0} MB" -f ($_.StorageMaximumLevel / 1MB) }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Storage Warning Level</Label>
+                                <ScriptBlock>if ($_.StorageWarningLevel -eq 0) { "No Limit" } else { "{0:N0} MB" -f ($_.StorageWarningLevel / 1MB) }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>User Code Maximum Level</Label>
+                                <ScriptBlock>if ($_.UserCodeMaximumLevel -eq 0) { "No Limit" } else { "$($_.UserCodeMaximumLevel) points" }</ScriptBlock>
+                            </ListItem>
+                            <ListItem>
+                                <Label>User Code WarningLevel</Label>
+                                <ScriptBlock>if ($_.UserCodeWarningLevel -eq 0) { "No Limit" } else { "$($_.UserCodeWarningLevel) points" }</ScriptBlock>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+        <View>
+            <Name>Default</Name>
+            <ViewSelectedBy>
+                <TypeName>Microsoft.SharePoint.Administration.SPQuota</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                     <TableColumnHeader>
+                        <Label>QuotaID</Label>
+                        <Width>12</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Storage Maximum Level (MB)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Storage Warning Level (MB)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>User Code Maximum Level (points)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>User Code Warning Level (points)</Label>
+                        <Width>12</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>QuotaID</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.StorageMaximumLevel -eq 0) { "No Limit" } else { "{0:N0}" -f ($_.StorageMaximumLevel / 1MB) }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.StorageWarningLevel -eq 0) { "No Limit" } else { "{0:N0}" -f ($_.StorageWarningLevel / 1MB) }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.UserCodeMaximumLevel -eq 0) { "No Limit" } else { $_.UserCodeMaximumLevel }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.UserCodeWarningLevel -eq 0) { "No Limit" } else { $_.UserCodeWarningLevel }</ScriptBlock>
+                                <Alignment>Right</Alignment>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
