@@ -1,0 +1,19 @@
+TOPIC
+    IPv4 Subnetting Utilities Module Overview
+
+SHORT DESCRIPTION
+    The IPv4 Subnetting Utilities module contains commandlets for calculating
+    and comparing IPv4 subnet information.
+
+LONG DESCRIPTION
+    The IPv4 Subnetting Utilities module contains commandlets for calculating
+    and comparing IPv4 subnet information. The available commandlets are:
+
+    ConvertTo-IPv4MaskBits
+    ConvertTo-IPv4Netmask
+    Test-Ipv4Netmask
+    Get-IPv4SubnetRange
+    Compare-IPv4Range
+    Compare-IPv4Subnet
+
+    Help for each command is available via Get-Help.
