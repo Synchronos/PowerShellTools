@@ -199,9 +199,9 @@ function Compare-IPv4Range
     .OUTPUTS
         A string containing the result of the comparison.
     .EXAMPLE
-        Compare-IPv4SubnetRange '192.168.1.0' 24 192.168.0.0 16
+        Compare-IPv4Range $rangeObject1 $rangeObject2
     .EXAMPLE
-        Compare-IPv4SubnetRange '192.168.1.0' '255.255.255.0' '192.168.0.0' '255.255.255.0'
+        Compare-IPv4Range '192.168.1.0' '192.168.1.255' '192.168.0.0' '192.168.0.255'
     #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     param
@@ -231,8 +231,8 @@ function Compare-IPv4Range
     {
         if ($PSCmdlet.ParameterSetName -eq 'Range')
         {
-            $Range1 = [PSCustomObject] @{ 'StartAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($StartAddress1)); 'EndAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($EndAddress1)) }
-            $Range2 = [PSCustomObject] @{ 'StartAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($StartAddress2)); 'EndAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($EndAddress2)) }
+            $Range1 = [PSCustomObject] @{ 'StartAddress' = $StartAddress1; 'EndAddress' = $EndAddress1 }
+            $Range2 = [PSCustomObject] @{ 'StartAddress' = $StartAddress2; 'EndAddress' = $EndAddress2 }
         }
 
         if ($Range1.StartAddress -eq $Range2.StartAddress -and $Range1.EndAddress -eq $Range2.EndAddress)
@@ -343,7 +343,7 @@ function Compare-IPv4Subnet
         elseif ($PSCmdlet.ParameterSetName -eq 'Netmask')
         {
                 $subnetRange1 = Get-IPv4SubnetRange $IPAddress1 $Netmask1
-                $subnetRange2 = Get-IPv4SubnetRange $IPAddress2 $Netmask1
+                $subnetRange2 = Get-IPv4SubnetRange $IPAddress2 $Netmask2
         }
 
         Compare-IPv4Range $subnetRange1 $subnetRange2 -PlainEnglish:$PlainEnglish
