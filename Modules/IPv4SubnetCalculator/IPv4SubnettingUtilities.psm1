@@ -136,22 +136,29 @@ function Get-IPv4SubnetRange
 
     process
     {
-        if ($PSCmdlet.ParameterSetName -eq 'MaskBits')
+        if (($PSCmdlet.ParameterSetName -eq 'MaskBits' -and $MaskBits -eq 32) -or ($PSCmdlet.ParameterSetName -eq 'Netmask' -and $Netmask -eq [ipaddress] '255.255.255.255'))
         {
-            $netmaskValue = [BitConverter]::ToInt32((ConvertTo-IPv4NetMask $MaskBits).GetAddressBytes(), 0)
+            $ipSubnetRange = [PSCustomObject] @{ 'StartAddress' = $IPaddress; 'EndAddress' = $IPAddress }
         }
-        elseif ($PSCmdlet.ParameterSetName -eq 'Netmask')
+        else
         {
-            [void] (ConvertTo-IPv4MaskBits $Netmask)
-            $netmaskValue = [BitConverter]::ToInt32($Netmask.GetAddressBytes(), 0)
+            if ($PSCmdlet.ParameterSetName -eq 'MaskBits')
+            {
+                $netmaskValue = [BitConverter]::ToInt32((ConvertTo-IPv4NetMask $MaskBits).GetAddressBytes(), 0)
+            }
+            elseif ($PSCmdlet.ParameterSetName -eq 'Netmask')
+            {
+                [void] (ConvertTo-IPv4MaskBits $Netmask)
+                $netmaskValue = [BitConverter]::ToInt32($Netmask.GetAddressBytes(), 0)
+            }
+
+            $lastAddressMaskValue= -bnot $netmaskValue
+            $ipValue = [BitConverter]::ToInt32($ipAddress.GetAddressBytes(), 0)
+            $startIPAddressValue = $ipValue -band $netmaskValue
+            $endIPAddressValue = $startIPAddressValue -bor $lastAddressMaskValue
+            $ipSubnetRange = [PSCustomObject] @{ 'StartAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($startIPAddressValue)); 'EndAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($endIPAddressValue)) }
         }
 
-        $lastAddressMaskValue= -bnot $netmaskValue
-        $ipValue = [BitConverter]::ToInt32($ipAddress.GetAddressBytes(), 0)
-        $startIPAddressValue = $ipValue -band $netmaskValue
-        $endIPAddressValue = $startIPAddressValue -bor $lastAddressMaskValue
-        $ipSubnetRange = [PSCustomObject] @{ 'StartAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($startIPAddressValue)); 'EndAddress' = New-Object 'System.Net.IPAddress' @(,[BitConverter]::GetBytes($endIPAddressValue)) }
-        
         $ipSubnetRange
     }
 }
