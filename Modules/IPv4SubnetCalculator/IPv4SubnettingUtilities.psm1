@@ -52,11 +52,8 @@ function Test-Ipv4Netmask
     {
         if ($Netmask.AddressFamily -eq [System.Net.Sockets.AddressFamily]::InterNetwork)
         {
-            $netmaskValue = [ipAddress]::HostToNetworkOrder([BitConverter]::ToInt32($Netmask.GetAddressBytes(), 0))
-            $maskBits = 0
-            for (; $maskBits -le 32; $maskBits++) { if ($netmaskValue -eq 0) { break; }; $netmaskValue = $netmaskValue -shl 1; }
-
-            $Netmask -eq (ConvertTo-IPv4Netmask $maskBits)
+            $bnotNetmaskValue = -bnot [ipAddress]::HostToNetworkOrder([BitConverter]::ToInt32($Netmask.GetAddressBytes(), 0))
+            ($bnotNetmaskValue -band ($bnotNetmaskValue + 1)) -eq 0
         }
         else
         {
